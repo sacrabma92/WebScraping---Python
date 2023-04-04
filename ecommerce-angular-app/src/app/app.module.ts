@@ -14,7 +14,7 @@ import { AppComponent } from './app.component';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { HeaderComponent } from './components/header/header.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 
 
@@ -31,6 +31,7 @@ import { HeaderComponent } from './components/header/header.component';
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireDatabaseModule,
+    BrowserAnimationsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
   ],

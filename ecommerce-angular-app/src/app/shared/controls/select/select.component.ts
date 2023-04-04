@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 import { ControlItem, Value } from '@app/models/frontend'
 export { ControlItem, Value } from '@app/models/frontend';
 
@@ -47,6 +48,17 @@ export class SelectComponent implements OnInit, ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
+  }
+
+  onChanged( event: MatSelectChange ): void {
+    const value = event.value ? event.value : null ;
+    this.value = value;
+    this.propagateChange( value );
+    this.changed.emit(value);
+  }
+
+  onBlur (): void {
+    this.propagateTouched();
   }
 
 }
