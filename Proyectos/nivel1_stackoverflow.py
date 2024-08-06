@@ -1,22 +1,46 @@
+"""
+OBJETIVO: 
+  - Extraer las preguntas de la pagina principal de Stackoverflow
+  - Aprender a utilizar Beautiful Soup para parsear el arbol HTML
+CREADO POR: Carlos Ramirez
+ULTIMA VEZ EDITADO: 06 AGOSTO 2024
+"""
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup # pip install beautifulsoup4
 
-# Debemos cambiar el encabezado de la petición para que no la detecte como ROBOT
+# USER AGENT PARA PROTEGERNOS DE BANEOS
 headers = {
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/71.0.3578.80 Chrome/71.0.3578.80 Safari/537.36"
 }
 
-url = "https://stackoverflow.com/questions"
+# URL SEMILLA
+url = 'https://stackoverflow.com/questions'
 
+# REQUERIMIENTO AL SERVIDOR
 respuesta = requests.get(url, headers=headers)
 
-
+# PARSEO DEL ARBOL CON BEAUTIFUL SOUP
 soup = BeautifulSoup(respuesta.text, 'lxml')
+contenedor_de_preguntas = soup.find(id="questions") # ENCONTRAR UN ELEMENTO POR ID
+lista_de_preguntas = contenedor_de_preguntas.find_all('div', class_="s-post-summary") # ENCONTRAR VARIOS ELEMENTOS POR TAG Y POR CLASE
+for pregunta in lista_de_preguntas: # ITERAR ELEMENTO POR ELEMENTO
 
-contenedor_de_preguntas = soup.find(id="questions")
-lista_de_preguntas = contenedor_de_preguntas.find_all('div',class_="question-summary")
+  # METODO #1: METODO TRADICIONAL
+  texto_pregunta = pregunta.find('h3').text # DENTRO DE CADA ELEMENTO ITERADO ENCONTRAR UN TAG
+  descripcion_pregunta = pregunta.find(class_='s-post-summary--content-excerpt').text # ENCONTRAR POR CLASE
+  descripcion_pregunta = descripcion_pregunta.replace('\n', '').replace('\r', '') # LIMPIEZA DE TEXTO
+  print (texto_pregunta)
+  print (descripcion_pregunta)
+  print ()
 
-for pregunta in lista_de_preguntas:
-    texto_pregunta = pregunta.find('h3').text
-    print(texto_pregunta)
 
+  # METODO #2: APROVECHANDO EL PODER COMPLETO DE BEAUTIFUL SOUP
+  contenedor_pregunta = pregunta.find('h3')
+  texto_pregunta = contenedor_pregunta.text
+  descripcion_pregunta = contenedor_pregunta.find_next_sibling('div') # TRAVERSANDO EL ARBOL DE UNA MENERA DIFERENTE
+  texto_descripcion_pregunta = descripcion_pregunta.text
+
+  texto_descripcion_pregunta = texto_descripcion_pregunta.replace('\n', '').replace('\t', '')
+  # print (texto_pregunta)
+  # print (texto_descripcion_pregunta)
+  # print ()
